@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
+import { cn } from "@/utils/cn";
 import orderService from "@/services/api/orderService";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import Select from "@/components/atoms/Select";
-import Badge from "@/components/atoms/Badge";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
-import { cn } from "@/utils/cn";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Wishlist from "@/components/pages/Wishlist";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import Input from "@/components/atoms/Input";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -303,7 +304,7 @@ onClick={() => {
                               {getStatusBadge(order.status)}
                             </div>
                             
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
                               <div>
                                 <span className="font-medium">Order Date:</span>{' '}
                                 {format(new Date(order.orderDate), 'MMM d, yyyy')}
@@ -311,34 +312,34 @@ onClick={() => {
                               <div>
                                 <span className="font-medium">Total:</span>{' '}
                                 <span className="font-semibold text-primary">
-                                  ${order.total.toFixed(2)}
+                                  ${order?.total?.toFixed(2) ?? '0.00'}
                                 </span>
                               </div>
                               <div>
                                 <span className="font-medium">Items:</span>{' '}
-                                {order.items.length} item{order.items.length !== 1 ? 's' : ''}
+                                {(order?.items?.length ?? 0)} item{(order?.items?.length ?? 0) !== 1 ? 's' : ''}
                               </div>
-                              {order.tracking && (
+                              {order?.tracking && (
                                 <div>
                                   <span className="font-medium">Tracking:</span>{' '}
-                                  {order.tracking.trackingNumber}
+                                  {order?.tracking?.trackingNumber ?? 'N/A'}
                                 </div>
                               )}
                             </div>
 
                             <div className="flex items-center mt-4 space-x-2">
-                              {order.items.slice(0, 3).map((item, index) => (
+                              {(order?.items ?? []).slice(0, 3).map((item, index) => (
                                 <img
                                   key={index}
-                                  src={item.image}
-                                  alt={item.name}
+                                  src={item?.image ?? 'https://via.placeholder.com/48'}
+                                  alt={item?.name ?? 'Product'}
                                   className="w-12 h-12 rounded-lg object-cover border border-gray-200"
                                 />
                               ))}
-                              {order.items.length > 3 && (
+                              {(order?.items?.length ?? 0) > 3 && (
                                 <div className="w-12 h-12 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center">
                                   <span className="text-xs font-medium text-gray-600">
-                                    +{order.items.length - 3}
+                                    +{(order?.items?.length ?? 0) - 3}
                                   </span>
                                 </div>
                               )}
@@ -394,7 +395,7 @@ onClick={() => {
                 <div>
                   <h3 className="font-semibold text-primary mb-4">Order Items</h3>
                   <div className="space-y-4">
-                    {selectedOrder.items.map((item, index) => (
+{selectedOrder.items.map((item, index) => (
                       <div key={index} className="flex items-center space-x-4">
                         <img
                           src={item.image}
@@ -402,15 +403,15 @@ onClick={() => {
                           className="w-16 h-16 rounded-lg object-cover border border-gray-200"
                         />
                         <div className="flex-1">
-                          <h4 className="font-medium text-primary">{item.name}</h4>
-                          <p className="text-gray-600 text-sm">Quantity: {item.quantity}</p>
+                          <h4 className="font-medium text-primary">{item?.name ?? 'Product'}</h4>
+                          <p className="text-gray-600 text-sm">Quantity: {item?.quantity ?? 1}</p>
                         </div>
                         <div className="text-right">
                           <p className="font-semibold text-primary">
-                            ${(item.price * item.quantity).toFixed(2)}
+                            ${((item?.price ?? 0) * (item?.quantity ?? 1)).toFixed(2)}
                           </p>
                           <p className="text-gray-600 text-sm">
-                            ${item.price.toFixed(2)} each
+                            ${(item?.price ?? 0).toFixed(2)} each
                           </p>
                         </div>
                       </div>
@@ -421,7 +422,7 @@ onClick={() => {
                     <div className="flex justify-between items-center">
                       <span className="font-semibold text-primary">Order Total:</span>
                       <span className="font-bold text-xl text-primary">
-                        ${selectedOrder.total.toFixed(2)}
+                        ${(selectedOrder?.total ?? 0).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -497,16 +498,16 @@ onClick={() => {
                       <ApperIcon name="Package" className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-600">Loading tracking information...</p>
                     </div>
-                  )}
+)}
                   
                   {/* Shipping Address */}
                   <div className="mt-8">
                     <h4 className="font-semibold text-primary mb-3">Shipping Address</h4>
                     <div className="bg-gray-50 rounded-lg p-4">
-                      <p className="font-medium text-primary">{selectedOrder.shippingAddress.name}</p>
-                      <p className="text-gray-600">{selectedOrder.shippingAddress.address}</p>
+                      <p className="font-medium text-primary">{selectedOrder?.shippingAddress?.name ?? 'N/A'}</p>
+                      <p className="text-gray-600">{selectedOrder?.shippingAddress?.address ?? 'N/A'}</p>
                       <p className="text-gray-600">
-                        {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state} {selectedOrder.shippingAddress.zip}
+                        {selectedOrder?.shippingAddress?.city ?? 'N/A'}, {selectedOrder?.shippingAddress?.state ?? 'N/A'} {selectedOrder?.shippingAddress?.zip ?? 'N/A'}
                       </p>
                     </div>
                   </div>
