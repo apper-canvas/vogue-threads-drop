@@ -1,7 +1,6 @@
 import { getApperClient } from "@/services/apperClient";
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 class OrderService {
   constructor() {
     this.apperClient = null;
@@ -44,9 +43,9 @@ class OrderService {
     } catch (e) {
       console.error("Error parsing shipping address:", e);
       shippingAddress = {};
-    }
+}
 
-return {
+    return {
       Id: record.Id,
       orderNumber: record.order_number_c || '',
       orderDate: record.order_date_c || '',
@@ -57,8 +56,9 @@ return {
       tracking
     };
   }
+}
 
-async createOrder(orderData) {
+  async createOrder(orderData) {
     try {
       await this.initClient();
       
@@ -101,7 +101,9 @@ async createOrder(orderData) {
         } else {
           console.error(`Failed to create order:`, createdOrder);
           return { success: false, error: "Failed to create order" };
-        }
+} else {
+        console.error(`Failed to create order:`, createdOrder);
+        return { success: false, error: "Failed to create order" };
       }
 
       return { success: false, error: "Failed to create order" };
@@ -109,7 +111,6 @@ async createOrder(orderData) {
       console.error("Error creating order:", error?.response?.data?.message || error);
       return { success: false, error: "Failed to create order" };
     }
-  }
   }
 
 async getOrderById(id) {
@@ -142,7 +143,6 @@ async getOrderById(id) {
       return { success: false, error: "Order not found" };
     }
   }
-
   async getUserOrders(filters = {}) {
     try {
       await this.initClient();
@@ -187,19 +187,18 @@ async getOrderById(id) {
         orders = orders.filter(order =>
           order.orderNumber.toLowerCase().includes(query) ||
           order.items.some(item => item.name?.toLowerCase().includes(query))
-        );
-      }
+}
+    }
 
-return {
-        success: true,
-        data: orders
-      };
+    return {
+      success: true,
+      data: orders
+    };
     } catch (error) {
       console.error("Error fetching user orders:", error?.response?.data?.message || error);
       return { success: true, data: [] };
     }
   }
-
   async getOrderTracking(orderId) {
     try {
       await this.initClient();
@@ -292,14 +291,14 @@ return {
           success: true,
           data: this.transformOrderData(updateResponse.results[0].data)
         };
-      }
+}
 
       return { success: false, error: "Failed to update order status" };
     } catch (error) {
       console.error("Error updating order status:", error?.response?.data?.message || error);
       return { success: false, error: "Failed to update order status" };
-}
-
+    }
+  }
   async processPayment(paymentData) {
     try {
       await delay(1000);
@@ -322,7 +321,7 @@ return {
         };
       }
     } catch (error) {
-      console.error("Error processing payment:", error?.response?.data?.message || error);
+console.error("Error processing payment:", error?.response?.data?.message || error);
       return {
         success: false,
         error: "Payment failed. Please try again."
