@@ -1,7 +1,6 @@
 const CART_STORAGE_KEY = "vogue-threads-cart";
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 class CartService {
   constructor() {
     this.cart = this.loadCart();
@@ -118,18 +117,13 @@ class CartService {
   async getCartItemCount() {
     await delay(50);
     
-    const count = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+const count = this.cart.reduce((sum, item) => sum + item.quantity, 0);
     
     return {
-      success: true,
-return {
       success: true,
       data: count
     };
   }
-}
-
-export default new CartService();
 }
 
 export default new CartService();

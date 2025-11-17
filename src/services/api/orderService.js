@@ -46,7 +46,7 @@ class OrderService {
       shippingAddress = {};
     }
 
-    return {
+return {
       Id: record.Id,
       orderNumber: record.order_number_c || '',
       orderDate: record.order_date_c || '',
@@ -55,15 +55,13 @@ class OrderService {
       items,
       shippingAddress,
       tracking
-};
+    };
   }
 
-  async createOrder(orderData) {
+async createOrder(orderData) {
     try {
       await this.initClient();
-        return { success: false, error: "Service unavailable" };
-      }
-
+      
       const orderNumber = `VT${Date.now().toString().slice(-6)}`;
       const trackingData = {
         carrier: "FedEx",
@@ -110,14 +108,13 @@ class OrderService {
     } catch (error) {
       console.error("Error creating order:", error?.response?.data?.message || error);
       return { success: false, error: "Failed to create order" };
-}
+    }
+  }
   }
 
-  async getOrderById(id) {
+async getOrderById(id) {
     try {
       await this.initClient();
-        return { success: false, error: "Order not found" };
-      }
 
       const response = await this.apperClient.getRecordById('orders_c', parseInt(id), {
         fields: [
@@ -193,14 +190,14 @@ class OrderService {
         );
       }
 
-      return {
+return {
         success: true,
         data: orders
       };
     } catch (error) {
       console.error("Error fetching user orders:", error?.response?.data?.message || error);
       return { success: true, data: [] };
-}
+    }
   }
 
   async getOrderTracking(orderId) {
@@ -301,9 +298,9 @@ class OrderService {
     } catch (error) {
       console.error("Error updating order status:", error?.response?.data?.message || error);
       return { success: false, error: "Failed to update order status" };
-    }
-  }
-async processPayment(paymentData) {
+}
+
+  async processPayment(paymentData) {
     try {
       await delay(1000);
 
@@ -330,7 +327,7 @@ async processPayment(paymentData) {
         success: false,
         error: "Payment failed. Please try again."
       };
-}
+    }
   }
 }
 
