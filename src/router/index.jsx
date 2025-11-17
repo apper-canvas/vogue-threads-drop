@@ -10,6 +10,7 @@ const Checkout = lazy(() => import("@/components/pages/Checkout"));
 const OrderConfirmation = lazy(() => import("@/components/pages/OrderConfirmation"));
 const UserProfile = lazy(() => import("@/components/pages/UserProfile"));
 const Wishlist = lazy(() => import("@/components/pages/Wishlist"));
+const About = lazy(() => import("@/components/pages/About"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 // Loading component for Suspense fallback
 const PageLoader = () => (
@@ -79,6 +80,14 @@ const mainRoutes = [
     element: (
       <Suspense fallback={<PageLoader />}>
         <Wishlist />
+      </Suspense>
+    )
+  },
+  {
+    path: "about",
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <About />
       </Suspense>
     )
   },
