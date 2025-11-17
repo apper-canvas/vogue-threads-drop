@@ -39,15 +39,15 @@ const Home = () => {
     }
   };
 
-  const handleAddToCart = async (product) => {
+const handleAddToCart = async (product) => {
     try {
       const cartItem = {
-        productId: product.Id,
-        productName: product.name,
-        price: product.price,
+        productId: product?.Id,
+        productName: product?.name,
+        price: product?.price,
         quantity: 1,
-        selectedSize: product.sizes[0] || "",
-        selectedColor: product.colors[0] || "",
+        selectedSize: product?.sizes?.[0] || "",
+        selectedColor: product?.colors?.[0] || "",
       };
 
       const result = await cartService.addToCart(cartItem);
@@ -187,9 +187,9 @@ const Home = () => {
             <Error message={error} onRetry={loadFeaturedProducts} />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {featuredProducts.map((product) => (
+{featuredProducts.map((product) => (
                 <ProductCard
-                  key={product.Id}
+                  key={product?.Id}
                   product={product}
                   onAddToCart={handleAddToCart}
                 />

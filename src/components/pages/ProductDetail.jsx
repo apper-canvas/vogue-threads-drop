@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { wishlistService } from "@/services/api/wishlistService";
+import wishlistService from "@/services/api/wishlistService";
 import { toast } from "react-toastify";
+import { cn } from "@/utils/cn";
 import productsService from "@/services/api/productsService";
 import cartService from "@/services/api/cartService";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Select from "@/components/atoms/Select";
-import Badge from "@/components/atoms/Badge";
-import Products from "@/components/pages/Products";
 import ProductCard from "@/components/molecules/ProductCard";
-import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
-import { cn } from "@/utils/cn";
+import Error from "@/components/ui/Error";
+import Products from "@/components/pages/Products";
+import Select from "@/components/atoms/Select";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -31,18 +31,18 @@ useEffect(() => {
   }, [id]);
 
   useEffect(() => {
-    if (product) {
-      setSelectedSize(product.sizes[0] || "");
-      setSelectedColor(product.colors[0] || "");
+if (product) {
+      setSelectedSize(product?.sizes?.[0] || "");
+      setSelectedColor(product?.colors?.[0] || "");
       loadRelatedProducts();
       checkWishlistStatus();
     }
-  }, [product]);
+  }, [product?.Id]);
 
-  const checkWishlistStatus = async () => {
-    if (!product) return;
+const checkWishlistStatus = async () => {
+    if (!product?.Id) return;
     try {
-      const inWishlist = await wishlistService.isInWishlist(product.Id);
+      const inWishlist = await wishlistService.isInWishlist(product?.Id);
       setIsInWishlist(inWishlist);
     } catch (error) {
       console.error('Error checking wishlist status:', error);
@@ -79,17 +79,17 @@ const loadRelatedProducts = async () => {
     }
   };
 
-  const handleWishlistToggle = async () => {
-    if (!product || wishlistLoading) return;
+const handleWishlistToggle = async () => {
+    if (!product?.Id || wishlistLoading) return;
 
     setWishlistLoading(true);
     try {
       if (isInWishlist) {
-        await wishlistService.remove(product.Id);
+        await wishlistService.remove(product?.Id);
         setIsInWishlist(false);
         toast.success('Removed from wishlist');
       } else {
-        await wishlistService.add(product.Id);
+        await wishlistService.add(product?.Id);
         setIsInWishlist(true);
         toast.success('Added to wishlist');
       }
@@ -100,22 +100,22 @@ const loadRelatedProducts = async () => {
     }
   };
 
-  const handleAddToCart = async () => {
-    if (!selectedSize && product.sizes.length > 0) {
+const handleAddToCart = async () => {
+    if (!selectedSize && product?.sizes?.length > 0) {
       toast.error("Please select a size");
       return;
     }
 
-    if (!selectedColor && product.colors.length > 0) {
+    if (!selectedColor && product?.colors?.length > 0) {
       toast.error("Please select a color");
       return;
     }
 
     try {
       const cartItem = {
-        productId: product.Id,
-        productName: product.name,
-        price: product.price,
+        productId: product?.Id,
+        productName: product?.name,
+        price: product?.price,
         quantity: quantity,
         selectedSize: selectedSize,
         selectedColor: selectedColor,
@@ -134,15 +134,15 @@ const loadRelatedProducts = async () => {
     }
   };
 
-  const handleRelatedProductAddToCart = async (relatedProduct) => {
+const handleRelatedProductAddToCart = async (relatedProduct) => {
     try {
       const cartItem = {
-        productId: relatedProduct.Id,
-        productName: relatedProduct.name,
-        price: relatedProduct.price,
+        productId: relatedProduct?.Id,
+        productName: relatedProduct?.name,
+        price: relatedProduct?.price,
         quantity: 1,
-        selectedSize: relatedProduct.sizes[0] || "",
-        selectedColor: relatedProduct.colors[0] || "",
+        selectedSize: relatedProduct?.sizes?.[0] || "",
+        selectedColor: relatedProduct?.colors?.[0] || "",
       };
 
       const result = await cartService.addToCart(cartItem);
@@ -213,13 +213,13 @@ const loadRelatedProducts = async () => {
             </button>
             <ApperIcon name="ChevronRight" className="w-4 h-4 text-gray-400" />
             <button 
-              onClick={() => navigate(`/products?category=${encodeURIComponent(product.category)}`)}
+onClick={() => navigate(`/products?category=${encodeURIComponent(product?.category)}`)}
               className="text-gray-500 hover:text-accent transition-colors duration-200"
             >
-              {product.category}
+              {product?.category}
             </button>
             <ApperIcon name="ChevronRight" className="w-4 h-4 text-gray-400" />
-            <span className="text-primary font-medium">{product.name}</span>
+            <span className="text-primary font-medium">{product?.name}</span>
           </nav>
         </div>
       </div>
@@ -230,11 +230,10 @@ const loadRelatedProducts = async () => {
           <div className="space-y-4">
             <div className="relative aspect-[4/5] bg-gray-100 rounded-lg overflow-hidden">
               <img
-                src={product.images[selectedImage]}
-                alt={product.name}
-                className="w-full h-full object-cover"
+src={product?.images?.[selectedImage] || '/api/placeholder/500/600'}
+                alt={product?.name}
               />
-              {product.featured && (
+              {product?.featured && (
                 <Badge 
                   variant="accent" 
                   className="absolute top-4 left-4 bg-gradient-to-r from-accent to-yellow-500"
@@ -244,9 +243,9 @@ const loadRelatedProducts = async () => {
               )}
             </div>
             
-            {product.images.length > 1 && (
+{product?.images && product?.images?.length > 1 && (
               <div className="flex space-x-2 overflow-x-auto">
-                {product.images.map((image, index) => (
+                {product?.images?.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -258,7 +257,7 @@ const loadRelatedProducts = async () => {
                   >
                     <img
                       src={image}
-                      alt={`${product.name} ${index + 1}`}
+                      alt={`${product?.name} ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                   </button>
@@ -271,28 +270,24 @@ const loadRelatedProducts = async () => {
           <div className="space-y-8">
             <div>
               <h1 className="font-display text-3xl font-bold text-primary mb-2">
-                {product.name}
+{product?.name}
               </h1>
               <p className="font-display text-2xl font-semibold bg-gradient-to-r from-accent to-yellow-600 bg-clip-text text-transparent">
-                ${product.price}
+                ${product?.price?.toFixed(2)}
               </p>
             </div>
-
-            <div>
-              <h3 className="font-medium text-primary mb-2">Description</h3>
-              <p className="text-gray-600 leading-relaxed">
-                {product.description}
-              </p>
-            </div>
+<p className="text-gray-600 leading-relaxed">
+              {product?.description}
+            </p>
 
             {/* Size Selection */}
-            {product.sizes.length > 0 && (
+            {product?.sizes && product?.sizes?.length > 0 && (
               <div>
                 <label className="block font-medium text-primary mb-3">
                   Size
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((size) => (
+                  {product?.sizes?.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
@@ -308,15 +303,14 @@ const loadRelatedProducts = async () => {
                 </div>
               </div>
             )}
-
-            {/* Color Selection */}
-            {product.colors.length > 0 && (
+{/* Color Selection */}
+            {product?.colors && product?.colors?.length > 0 && (
               <div>
                 <label className="block font-medium text-primary mb-3">
                   Color
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {product.colors.map((color) => (
+                  {product?.colors?.map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
@@ -332,7 +326,6 @@ const loadRelatedProducts = async () => {
                 </div>
               </div>
             )}
-
             {/* Quantity */}
             <div>
               <label className="block font-medium text-primary mb-3">
@@ -384,19 +377,19 @@ const loadRelatedProducts = async () => {
                 className="flex-1 py-4 text-lg bg-gradient-to-r from-accent to-yellow-500 hover:from-yellow-500 hover:to-accent transform hover:scale-105 transition-all duration-200"
               >
                 <ApperIcon name="ShoppingBag" className="w-5 h-5 mr-2" />
-                Add to Cart - ${(product.price * quantity).toFixed(2)}
+Add to Cart - ${(product?.price * quantity).toFixed(2)}
               </Button>
             </div>
             {/* Product Details */}
             <div className="border-t pt-6 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Category</span>
-                <span className="font-medium">{product.category}</span>
+<span className="text-gray-600">Category</span>
+                <span className="font-medium">{product?.category}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Availability</span>
-                <span className={`font-medium ${product.stock > 0 ? "text-green-600" : "text-red-600"}`}>
-                  {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
+                <span className={`font-medium ${product?.stock > 0 ? "text-green-600" : "text-red-600"}`}>
+                  {product?.stock > 0 ? `${product?.stock} in stock` : "Out of stock"}
                 </span>
               </div>
             </div>
@@ -410,9 +403,9 @@ const loadRelatedProducts = async () => {
               You might also like
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((relatedProduct) => (
+{relatedProducts.map((relatedProduct) => (
                 <ProductCard
-                  key={relatedProduct.Id}
+                  key={relatedProduct?.Id}
                   product={relatedProduct}
                   onAddToCart={handleRelatedProductAddToCart}
                 />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import productsService from "@/services/api/productsService";
 import cartService from "@/services/api/cartService";
-import { wishlistService } from "@/services/api/wishlistService";
+import wishlistService from "@/services/api/wishlistService";
 import ApperIcon from "@/components/ApperIcon";
 import CartIcon from "@/components/molecules/CartIcon";
 import CategoryDropdown from "@/components/molecules/CategoryDropdown";

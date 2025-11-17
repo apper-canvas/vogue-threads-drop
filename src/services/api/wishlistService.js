@@ -84,4 +84,6 @@ const wishlistService = {
   }
 };
 
+export default wishlistService;
+
 export { wishlistService };

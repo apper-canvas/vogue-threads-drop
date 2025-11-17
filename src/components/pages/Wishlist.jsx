@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-import Loading from '@/components/ui/Loading';
-import Empty from '@/components/ui/Empty';
-import { wishlistService } from '@/services/api/wishlistService';
-import productsService from '@/services/api/productsService';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import wishlistService from "@/services/api/wishlistService";
+import productsService from "@/services/api/productsService";
+import ApperIcon from "@/components/ApperIcon";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Home from "@/components/pages/Home";
+import Button from "@/components/atoms/Button";
 
 function Wishlist() {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ function Wishlist() {
     loadWishlist();
   }, []);
 
-  const loadWishlist = async () => {
+const loadWishlist = async () => {
     try {
       setLoading(true);
       const wishlistIds = await wishlistService.getAll();
@@ -29,8 +31,7 @@ function Wishlist() {
         setProducts([]);
         setLoading(false);
         return;
-}
-
+      }
       const productsResponse = await productsService.getAll();
       if (!productsResponse.success) {
         throw new Error('Failed to fetch products');
@@ -59,11 +60,11 @@ function Wishlist() {
       toast.error('Failed to remove item from wishlist');
     }
   };
+};
 
-const handleViewProduct = (productId) => {
+  const handleViewProduct = (productId) => {
     navigate(`/product/${productId}`);
   };
-
   if (loading) {
     return <Loading />;
   }
@@ -146,65 +147,62 @@ const handleViewProduct = (productId) => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
             <div
-              key={product.Id}
+              key={product?.Id}
               className="group bg-surface rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
             >
-              <div className="relative overflow-hidden">
+              <div className="relative overflow-hidden bg-gray-100 h-64">
                 <img
-                  src={product.imageUrl}
-                  alt={product.name}
-                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                  src={product?.images?.[0] || '/api/placeholder/300/400'}
+                  alt={product?.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-200" />
                 <button
-                  onClick={() => handleRemoveFromWishlist(product.Id)}
+                  onClick={() => handleRemoveFromWishlist(product?.Id)}
                   className="absolute top-2 right-2 p-2 bg-white/90 hover:bg-white rounded-full shadow-md transition-colors duration-200 opacity-0 group-hover:opacity-100"
                 >
-                  <ApperIcon name="X" size={16} className="text-gray-600" />
+                  <ApperIcon name="X" className="w-4 h-4 text-red-500" />
                 </button>
               </div>
-              
-              <div className="p-4">
-                <div className="mb-2">
-                  <h3 className="font-semibold text-primary group-hover:text-accent transition-colors duration-200 line-clamp-2">
-                    {product.name}
+<div className="p-4">
+                <div className="mb-3">
+                  <h3 className="font-medium text-primary line-clamp-1">
+                    {product?.name}
                   </h3>
-                  <p className="text-sm text-gray-500 capitalize">{product.category}</p>
+                  <p className="text-sm text-gray-500 capitalize">{product?.category}</p>
                 </div>
-                
+
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
                     <span className="text-xl font-bold text-accent">
-                      ${product.price.toFixed(2)}
+                      ${product?.price?.toFixed(2)}
                     </span>
-                    {product.originalPrice && product.originalPrice > product.price && (
+                    {product?.originalPrice && product?.originalPrice > product?.price && (
                       <span className="text-sm text-gray-500 line-through">
-                        ${product.originalPrice.toFixed(2)}
+                        ${product?.originalPrice?.toFixed(2)}
                       </span>
                     )}
                   </div>
-                  {product.rating && (
+                  {product?.rating && (
                     <div className="flex items-center space-x-1">
                       <ApperIcon name="Star" size={14} className="text-yellow-400 fill-current" />
-                      <span className="text-sm text-gray-600">{product.rating}</span>
+                      <span className="text-sm text-gray-600">{product?.rating}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="flex space-x-2">
+<div className="flex gap-2">
                   <Button 
-                    onClick={() => handleViewProduct(product.Id)}
-                    className="flex-1 flex items-center justify-center space-x-2"
+                    onClick={() => handleViewProduct(product?.Id)}
+                    className="flex-1"
                   >
-                    <ApperIcon name="Eye" size={16} />
-                    <span>View</span>
+                    View Details
                   </Button>
-                  <Button
+                  <Button 
                     variant="outline"
-                    onClick={() => handleRemoveFromWishlist(product.Id)}
+                    onClick={() => handleRemoveFromWishlist(product?.Id)}
                     className="flex items-center justify-center px-3"
                   >
                     <ApperIcon name="Trash2" size={16} className="text-red-500" />
