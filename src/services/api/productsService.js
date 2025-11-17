@@ -1,7 +1,6 @@
 import { getApperClient } from "@/services/apperClient";
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 class ProductsService {
   constructor() {
     this.apperClient = null;
@@ -31,14 +30,14 @@ class ProductsService {
       subcategory: record.subcategory_c || '',
       sizes: this.parseMultiPicklist(record.sizes_c),
       colors: this.parseMultiPicklist(record.colors_c),
-      stock: parseInt(record.stock_c || 0),
-      featured: record.featured_c || false,
-      images: record.images_c ? record.images_c.map(img => img.url || img.Url || '/api/placeholder/300/400') : ['/api/placeholder/300/400']
+images: record.images_c ? record.images_c.map(img => img.url || img.Url || '/api/placeholder/300/400') : ['/api/placeholder/300/400']
     };
   }
 
   async getAll(filters = {}) {
-try {
+    try {
+  async getAll(filters = {}) {
+    try {
       await this.initClient();
       if (!this.apperClient) {
         return { success: false, data: [] };
@@ -134,16 +133,14 @@ try {
         success: true,
         data: products
       };
-console.error("Error fetching products:", error?.response?.data?.message || error);
+    } catch (error) {
+      console.error("Error fetching products:", error?.response?.data?.message || error);
       return { success: false, data: [] };
-    }
+}
   }
 
   async getById(id) {
-
-  async getById(id) {
     try {
-      await this.initClient();
       if (!this.apperClient) {
         return { success: false, error: "Product not found" };
       }
@@ -175,7 +172,6 @@ console.error("Error fetching products:", error?.response?.data?.message || erro
     } catch (error) {
       console.error("Error fetching product:", error?.response?.data?.message || error);
       return { success: false, error: "Product not found" };
-return { success: false, error: "Product not found" };
     }
   }
 
@@ -213,15 +209,16 @@ return { success: false, error: "Product not found" };
         return { success: true, data: [] };
       }
 
-      const featured = (response.data || []).map(record => this.transformProductData(record));
+const featured = (response.data || []).map(record => this.transformProductData(record));
       return {
         success: true,
         data: featured
       };
     } catch (error) {
       console.error("Error fetching featured products:", error?.response?.data?.message || error);
-return { success: true, data: [] };
+      return { success: true, data: [] };
     }
+}
 
   async getRelated(productId, limit = 4) {
     try {
@@ -229,10 +226,6 @@ return { success: true, data: [] };
       if (!this.apperClient) {
         return { success: false, error: "Product not found" };
       }
-
-      // Get main product first
-      const mainResponse = await this.apperClient.getRecordById('products_c', parseInt(productId), {
-        fields: [
           { field: { Name: "category_c" }, referenceField: { field: { Name: "Name" } } }
         ]
       });
@@ -283,7 +276,7 @@ return { success: true, data: [] };
       let related = (response.data || [])
         .filter(record => record.Id !== parseInt(productId))
         .slice(0, limit)
-        .map(record => this.transformProductData(record));
+.map(record => this.transformProductData(record));
 
       return {
         success: true,
@@ -291,8 +284,9 @@ return { success: true, data: [] };
       };
     } catch (error) {
       console.error("Error fetching related products:", error?.response?.data?.message || error);
-return { success: false, error: "Product not found" };
+      return { success: false, error: "Product not found" };
     }
+  }
 
   async getCategories() {
     try {
@@ -308,6 +302,7 @@ return { success: false, error: "Product not found" };
       });
 
       if (!response?.success) {
+if (!response?.success) {
         return { success: true, data: [] };
       }
 
@@ -318,10 +313,12 @@ return { success: false, error: "Product not found" };
       };
     } catch (error) {
       console.error("Error fetching categories:", error?.response?.data?.message || error);
-console.error("Error fetching categories:", error?.response?.data?.message || error);
       return { success: true, data: [] };
     }
   }
 }
 
 export default new ProductsService();
+
+export default new ProductsService();
+}

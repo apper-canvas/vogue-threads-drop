@@ -55,12 +55,12 @@ class OrderService {
       items,
       shippingAddress,
       tracking
-    };
+};
   }
-async createOrder(orderData) {
+
+  async createOrder(orderData) {
     try {
       await this.initClient();
-      if (!this.apperClient) {
         return { success: false, error: "Service unavailable" };
       }
 
@@ -110,12 +110,12 @@ async createOrder(orderData) {
     } catch (error) {
       console.error("Error creating order:", error?.response?.data?.message || error);
       return { success: false, error: "Failed to create order" };
-    }
+}
   }
-async getOrderById(id) {
+
+  async getOrderById(id) {
     try {
       await this.initClient();
-      if (!this.apperClient) {
         return { success: false, error: "Order not found" };
       }
 
@@ -200,9 +200,10 @@ async getOrderById(id) {
     } catch (error) {
       console.error("Error fetching user orders:", error?.response?.data?.message || error);
       return { success: true, data: [] };
-    }
+}
   }
-async getOrderTracking(orderId) {
+
+  async getOrderTracking(orderId) {
     try {
       await this.initClient();
       if (!this.apperClient) {
@@ -329,10 +330,8 @@ async processPayment(paymentData) {
         success: false,
         error: "Payment failed. Please try again."
       };
-    }
+}
   }
 }
-
-export default new OrderService();
 
 export default new OrderService();

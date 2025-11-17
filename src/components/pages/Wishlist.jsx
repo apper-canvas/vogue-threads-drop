@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import wishlistService from "@/services/api/wishlistService";
 import productsService from "@/services/api/productsService";
+import wishlistService from "@/services/api/wishlistService";
 import ApperIcon from "@/components/ApperIcon";
 import Loading from "@/components/ui/Loading";
 import Empty from "@/components/ui/Empty";
@@ -50,18 +50,17 @@ const loadWishlist = async () => {
     }
   };
 
-  const handleRemoveFromWishlist = async (productId) => {
+const handleRemoveFromWishlist = async (productId) => {
     try {
       await wishlistService.remove(productId);
       setWishlistItems(prev => prev.filter(id => id !== productId));
       setProducts(prev => prev.filter(product => product.Id !== productId));
       toast.success('Item removed from wishlist');
     } catch (err) {
+      console.error('Failed to remove from wishlist:', err);
       toast.error('Failed to remove item from wishlist');
     }
   };
-};
-
   const handleViewProduct = (productId) => {
     navigate(`/product/${productId}`);
   };
@@ -146,7 +145,6 @@ const loadWishlist = async () => {
             <span>Add More Items</span>
           </Button>
         </div>
-
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
             <div
@@ -165,8 +163,8 @@ const loadWishlist = async () => {
                 >
                   <ApperIcon name="X" className="w-4 h-4 text-red-500" />
                 </button>
-              </div>
-<div className="p-4">
+</div>
+              <div className="p-4">
                 <div className="mb-3">
                   <h3 className="font-medium text-primary line-clamp-1">
                     {product?.name}
@@ -192,9 +190,8 @@ const loadWishlist = async () => {
                     </div>
                   )}
                 </div>
-
 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={() => handleViewProduct(product?.Id)}
                     className="flex-1"
                   >
@@ -207,12 +204,11 @@ const loadWishlist = async () => {
                   >
                     <ApperIcon name="Trash2" size={16} className="text-red-500" />
                   </Button>
-                </div>
+</div>
               </div>
             </div>
           ))}
         </div>
-
         <div className="mt-12 text-center">
           <Button 
             variant="outline"

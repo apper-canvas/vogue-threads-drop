@@ -122,10 +122,14 @@ class CartService {
     
     return {
       success: true,
+return {
+      success: true,
       data: count
     };
   }
 }
 
 export default new CartService();
+}
+
 export default new CartService();
